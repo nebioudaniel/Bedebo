@@ -1,0 +1,36 @@
+// schema.prisma
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id // Telegram ID as string
+  username  String?  @unique
+  firstName String?
+  lastName  String?
+  photoUrl  String?
+  createdAt DateTime @default(now())
+
+  posts Post[] // Your existing line
+
+  @@map("users")
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // ADD THIS LINE 👇
+  author User @relation(fields: [authorId], references: [id])
+
+  @@map("posts")
+}
