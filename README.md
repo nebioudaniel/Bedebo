@@ -25,9 +25,9 @@ Most AI study tools are built for English speakers and answer from the whole int
 
 - **Framework:** Next.js (App Router) + TypeScript
 - **UI:** Tailwind CSS + shadcn/ui
-- **Database:** Prisma + [your database]
-- **AI:** [your provider / model]
-- **Deployment:** Vercel
+- **Database:** Prisma + Postgresql
+- **AI:** Deepseek Api
+- **Deployment:** Vercel and Rail way
 
 ## Getting started
 
@@ -67,13 +67,34 @@ prisma/       schema and seed data
 
 ## How the AI stays on topic
 
-[2 to 3 sentences in your own words: how you keep answers limited to the student's material, e.g. you pass only the uploaded text as context and tell the model not to answer beyond it.]
+The AI never answers from the open internet. It answers from the student's own file.
+
+1. **Extract:** when a student uploads a PDF or notes, I pull the text out of the file.
+2. **Chunk:** that text is split into smaller chunks, so each piece is small enough to fit in the model's context and stays focused on one idea.
+3. **Retrieve:** when the student asks something or generates a quiz or study guide, only the relevant chunks are passed to the AI as its source material.
+4. **Answer:** the AI is told to respond from those chunks, so it doesn't drift off the topic or go outside the course.
+
+Building this is where I learned how chunking and AI integration work in practice. Chunk size matters a lot: too big and the model loses focus, too small and it loses context.
+
+## Technical decisions
+
+- **Chunking before the model call.** Sending a whole textbook to the model is slow, expensive and unfocused. Splitting the text into chunks and sending only what's needed keeps answers on topic and API usage lower.
+- **DeepSeek API for generation.** [Why: cost? quality? Amharic support?]
+- **PostgreSQL with Prisma.** [What's stored: users, uploaded files, chunks, generated guides?] Prisma gives type-safe queries across the whole TypeScript codebase.
+- **Vercel + Railway.** [What runs where: e.g. Next.js app on Vercel, database on Railway.]
+- **Telegram as a second entry point.** Many students in Ethiopia already live in Telegram, so the app meets them there instead of asking them to install something new.
+
+## Known limitations
+
+- **The chat is limited.** Students can't yet ask questions about each section of their material one by one.
+- **The workspace needs work.** The layout and flow still need to be polished.
+- **AI usage isn't managed.** [e.g. there are no per-user limits yet, so usage and cost are hard to control.]
 
 ## Roadmap
 
-- [ ] [next feature]
-- [ ] [next feature]
+- [ ] Section-based chat: ask about any part of your material, with the AI explaining it and mapping out the topic
+- [ ] Redesign the workspace to be cleaner and easier to use
+- [ ] AI usage management: [limits, quotas, or caching, whichever you plan]
 
-## Author
 
-Built by [Neba](https://github.com/nebioudaniel), founder of Mesob AI.
+Built by [Nebiyou Daniel ](https://github.com/nebioudaniel), Learn mmore Build better 
